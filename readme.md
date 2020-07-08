@@ -4,6 +4,17 @@
 This SDK is meant to allow for Java applications to interact with a Wordpress Installation.  It provides for 
 authentication and mapping of objects to/from the wordpress API to standard Java Objects.
 
+## Install
+This module is available using Maven and can be found in Maven Central.
+```xml
+<dependency>
+    <groupId>consulting.pigott.wordpress</groupId>
+    <artifactId>wordpress-sdk</artifactId>
+    <version>0.1.0</version>
+</dependency>
+```
+
+
 ## Examples
 ### Get All Posts
 ```java
