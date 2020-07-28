@@ -8,8 +8,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Map;
 
 @Data
 @Builder
@@ -107,7 +109,7 @@ public class Post {
 
     @JsonProperty("meta")
     @JsonView({JsonViews.Read.class, JsonViews.Edit.class})
-    private Meta meta;
+    private List<Meta> meta;
 
     @JsonProperty("sticky")
     @JsonView({JsonViews.Read.class, JsonViews.Edit.class})
@@ -124,6 +126,10 @@ public class Post {
     @JsonProperty("tags")
     @JsonView({JsonViews.Read.class, JsonViews.Edit.class})
     private List<String> tags;
+
+    private String authorName;
+    private String featureMediaImage;
+    private Map<Integer,String> authorAvatars;
 
     @JsonProperty(value = "title", access = JsonProperty.Access.READ_ONLY)
     @JsonView({JsonViews.Read.class, JsonViews.Edit.class})
@@ -147,5 +153,19 @@ public class Post {
     @JsonView({JsonViews.Read.class, JsonViews.Edit.class})
     public String getExcerptString() {
         return excerpt == null ? null : excerpt.getRendered();
+    }
+
+    @JsonProperty("_embedded")
+    private void unpackNested(Map<String,Object> embedded) {
+        ArrayList<Object> things = (ArrayList<Object>) embedded.get("author");
+        Map<String, Object> authorData = (Map<String, Object>)things.get(0);
+        this.authorName = authorData.get("name").toString();
+        this.authorAvatars = (Map<Integer,String>)authorData.get("avatar_urls");
+
+        ArrayList<Object> feature_media = (ArrayList<Object>) embedded.get("wp:featuredmedia");
+        if (feature_media != null && !feature_media.isEmpty()) {
+            Map<String, Object> featureImageData = (Map<String,Object>)feature_media.get(0);
+            this.featureMediaImage = featureImageData.get("source_url").toString();
+        }
     }
 }
