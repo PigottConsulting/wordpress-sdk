@@ -127,10 +127,6 @@ public class Post {
     @JsonView({JsonViews.Read.class, JsonViews.Edit.class})
     private List<String> tags;
 
-    private String authorName;
-    private String featureMediaImage;
-    private Map<Integer,String> authorAvatars;
-
     @JsonProperty(value = "title", access = JsonProperty.Access.READ_ONLY)
     @JsonView({JsonViews.Read.class, JsonViews.Edit.class})
     public String getTitleString() {
@@ -156,16 +152,33 @@ public class Post {
     }
 
     @JsonProperty("_embedded")
-    private void unpackNested(Map<String,Object> embedded) {
-        ArrayList<Object> things = (ArrayList<Object>) embedded.get("author");
-        Map<String, Object> authorData = (Map<String, Object>)things.get(0);
-        this.authorName = authorData.get("name").toString();
-        this.authorAvatars = (Map<Integer,String>)authorData.get("avatar_urls");
+    @JsonView({JsonViews.Read.class, JsonViews.Edit.class})
+    private EmbeddedData embeddedData;
 
-        ArrayList<Object> feature_media = (ArrayList<Object>) embedded.get("wp:featuredmedia");
-        if (feature_media != null && !feature_media.isEmpty()) {
-            Map<String, Object> featureImageData = (Map<String,Object>)feature_media.get(0);
-            this.featureMediaImage = featureImageData.get("source_url").toString();
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    public String getFirstFeaturedImageSrc() {
+        if (this.embeddedData.getFeatureImage() != null && !this.embeddedData.getFeatureImage().isEmpty()) {
+            Map<String, Object> featureImageData = this.embeddedData.getFeatureImage().get(0);
+            return featureImageData.get("source_url").toString();
         }
+        return null;
+    }
+
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    public String getAuthorName() {
+        if (this.embeddedData.getAuthor() != null && !this.embeddedData.getAuthor().isEmpty()) {
+            Map<String, Object> authorData = this.embeddedData.getAuthor().get(0);
+            return authorData.get("name").toString();
+        }
+        return null;
+    }
+
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    public Map<Integer,String> getAuthorAvatars() {
+        if (this.embeddedData.getAuthor() != null && !this.embeddedData.getAuthor().isEmpty()) {
+            Map<String, Object> authorData = this.embeddedData.getAuthor().get(0);
+            return (Map<Integer,String>)authorData.get("avatar_urls");
+        }
+        return null;
     }
 }

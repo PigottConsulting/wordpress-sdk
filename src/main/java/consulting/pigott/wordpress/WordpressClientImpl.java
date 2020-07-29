@@ -66,7 +66,8 @@ public class WordpressClientImpl implements WordpressClient {
     @Override
     public PagedResponse<Post> getPosts(Integer page, Integer perPage, Optional<Map<String, String>> queryParams) throws IOException, URISyntaxException {
         URIBuilder builder = this.makeBaseURIBuilder(page, perPage)
-                .setPathSegments("wp-json", "wp", "v2", "posts");
+                .setPathSegments("wp-json", "wp", "v2", "posts")
+                .setParameter("_embed", null);
         if (queryParams.isPresent()) {
             for (String key : queryParams.get().keySet()) {
                 builder.addParameter(key, queryParams.get().get(key));
@@ -86,6 +87,7 @@ public class WordpressClientImpl implements WordpressClient {
                         new HttpGet(
                                 this.makeBaseURIBuilder()
                                         .setPathSegments("wp-json", "wp", "v2", "posts", id)
+                                        .setParameter("_embed",null)
                                         .build().toURL().toString()
                         )
                 ),
