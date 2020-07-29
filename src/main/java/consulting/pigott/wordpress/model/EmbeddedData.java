@@ -20,4 +20,7 @@ public class EmbeddedData {
 
     @JsonProperty("wp:featuredmedia")
     private List<Map<String,Object>> featureImage;
+
+    @JsonProperty("wp:term")
+    private List<List<Map<String,Object>>> terms;
 }
