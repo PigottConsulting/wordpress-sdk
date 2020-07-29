@@ -8,8 +8,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Map;
 
 @Data
 @Builder
@@ -107,7 +109,7 @@ public class Post {
 
     @JsonProperty("meta")
     @JsonView({JsonViews.Read.class, JsonViews.Edit.class})
-    private Meta meta;
+    private List<Meta> meta;
 
     @JsonProperty("sticky")
     @JsonView({JsonViews.Read.class, JsonViews.Edit.class})
@@ -147,5 +149,36 @@ public class Post {
     @JsonView({JsonViews.Read.class, JsonViews.Edit.class})
     public String getExcerptString() {
         return excerpt == null ? null : excerpt.getRendered();
+    }
+
+    @JsonProperty("_embedded")
+    @JsonView({JsonViews.Read.class, JsonViews.Edit.class})
+    private EmbeddedData embeddedData;
+
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    public String getFirstFeaturedImageSrc() {
+        if (this.embeddedData.getFeatureImage() != null && !this.embeddedData.getFeatureImage().isEmpty()) {
+            Map<String, Object> featureImageData = this.embeddedData.getFeatureImage().get(0);
+            return featureImageData.get("source_url").toString();
+        }
+        return null;
+    }
+
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    public String getAuthorName() {
+        if (this.embeddedData.getAuthor() != null && !this.embeddedData.getAuthor().isEmpty()) {
+            Map<String, Object> authorData = this.embeddedData.getAuthor().get(0);
+            return authorData.get("name").toString();
+        }
+        return null;
+    }
+
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    public Map<Integer,String> getAuthorAvatars() {
+        if (this.embeddedData.getAuthor() != null && !this.embeddedData.getAuthor().isEmpty()) {
+            Map<String, Object> authorData = this.embeddedData.getAuthor().get(0);
+            return (Map<Integer,String>)authorData.get("avatar_urls");
+        }
+        return null;
     }
 }
