@@ -8,16 +8,15 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Post {
+    private final static String TAG_TAXONOMY = "post_tag";
 
     @JsonProperty("date")
     @JsonView({JsonViews.Read.class, JsonViews.Edit.class})
@@ -180,5 +179,20 @@ public class Post {
             return (Map<Integer,String>)authorData.get("avatar_urls");
         }
         return null;
+    }
+
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    public List<String> getTagsNames() {
+        List <String> tagNames = new ArrayList<>();
+        if (this.embeddedData.getTerms() != null && !this.embeddedData.getTerms().isEmpty()) {
+            this.embeddedData.getTerms().forEach(term -> {
+                tagNames.addAll(term.stream().filter(innerTerm -> {
+                    return TAG_TAXONOMY.equalsIgnoreCase((String)innerTerm.get("taxonomy"));
+                }).map(innerTerm -> {
+                    return (String)innerTerm.get("name");
+                }).collect(Collectors.toList()));
+            });
+        }
+        return !tagNames.isEmpty() ? tagNames : null;
     }
 }
