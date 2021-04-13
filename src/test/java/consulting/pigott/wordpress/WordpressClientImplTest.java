@@ -40,8 +40,7 @@ public class WordpressClientImplTest {
         wordpressClient = null;
         try {
             config = Config.builder().scheme("https").host("localhost").build();
-            wordpressClient = new WordpressClientImpl(config, mockAuthenticationProvider);
-            wordpressClient.setHttpClient(mockHttpClient);
+            wordpressClient = new WordpressClientImpl(config, mockAuthenticationProvider, mockHttpClient);
         } catch (Exception e) {
             e.printStackTrace();
         }

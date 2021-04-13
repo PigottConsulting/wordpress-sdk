@@ -39,18 +39,19 @@ public class WordpressClientImpl implements WordpressClient {
 
     private ObjectMapper mapper;
 
-    public WordpressClientImpl(Config config, AuthenticationProvider authenticationProvider) throws IOException {
+    public WordpressClientImpl(Config config, AuthenticationProvider authenticationProvider) {
+        this(config, authenticationProvider, HttpClientBuilder.create().build());
+    }
+
+    public WordpressClientImpl(Config config, AuthenticationProvider authenticationProvider, HttpClient httpClient) {
         this.config = config;
         this.authenticationProvider = authenticationProvider;
-
-        this.httpClient = HttpClientBuilder.create()
-                .build();
+        this.httpClient = httpClient;
 
         mapper = new ObjectMapper();
         mapper.configure(JsonGenerator.Feature.IGNORE_UNKNOWN, true);
         mapper.configure(JsonParser.Feature.IGNORE_UNDEFINED, true);
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-
     }
 
     //=============== POSTS  ========================//
