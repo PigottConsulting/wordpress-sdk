@@ -2,10 +2,7 @@ package consulting.pigott.wordpress;
 
 import consulting.pigott.wordpress.authentication.AuthenticationProvider;
 import consulting.pigott.wordpress.config.Config;
-import consulting.pigott.wordpress.model.JsonViews;
-import consulting.pigott.wordpress.model.Media;
-import consulting.pigott.wordpress.model.PagedResponse;
-import consulting.pigott.wordpress.model.Post;
+import consulting.pigott.wordpress.model.*;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -219,6 +216,29 @@ public class WordpressClientImpl implements WordpressClient {
                 JsonViews.Read.class);
     }
 
+    //==============  Category  ===================//
+
+    @Override
+    public List<Category> getAllCategories(Optional<Map<String, String>> queryParams) throws IOException, URISyntaxException {
+        return getAll(this::getCategories, queryParams);
+    }
+
+    @Override
+    public PagedResponse<Category> getCategories(Integer page, Integer perPage, Optional<Map<String, String>> queryParams) throws IOException, URISyntaxException {
+        URIBuilder builder = this.makeBaseURIBuilder(page, perPage)
+                .setPathSegments("wp-json", "wp", "v2", "categories");
+
+        if (queryParams.isPresent()) {
+            for (String key : queryParams.get().keySet()) {
+                builder.addParameter(key, queryParams.get().get(key));
+            }
+        }
+
+        return this.executeList(
+                this.makeStandardRequest(new HttpGet(builder.build().toURL().toString())),
+                Category.class,
+                JsonViews.Read.class);
+    }
 
     //================= Support Methods  ==================//
 
@@ -286,14 +306,6 @@ public class WordpressClientImpl implements WordpressClient {
 
         pagedResponse.addAll(entries);
         return pagedResponse;
-    }
-
-    public void setHttpClient(HttpClient httpClient) {
-        this.httpClient = httpClient;
-    }
-
-    public HttpClient getHttpClient() {
-        return httpClient;
     }
 
 

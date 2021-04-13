@@ -1,5 +1,6 @@
 package consulting.pigott.wordpress;
 
+import consulting.pigott.wordpress.model.Category;
 import consulting.pigott.wordpress.model.Media;
 import consulting.pigott.wordpress.model.PagedResponse;
 import consulting.pigott.wordpress.model.Post;
@@ -37,4 +38,10 @@ public interface WordpressClient {
     Media updateMedia(Media media) throws IOException, URISyntaxException;
 
     void deleteMedia(String id) throws IOException, URISyntaxException;
+
+    //==============  Category  ===================//
+
+    List<Category> getAllCategories(Optional<Map<String, String>> queryParams) throws IOException, URISyntaxException;
+
+    PagedResponse<Category> getCategories(Integer page, Integer perPage, Optional<Map<String, String>> queryParams) throws IOException, URISyntaxException;
 }
