@@ -229,6 +229,10 @@ public class WordpressClientImpl implements WordpressClient {
         while (!lastPage) {
 
             PagedResponse<T> response = getter.get(pageNum, 20,queryParams);
+            if (response.getPages() == null) {
+                response.setPages(0);
+                response.setTotal(0);
+            }
 
             entities.addAll(response);
             if (pageNum < response.getPages()) {
@@ -282,6 +286,14 @@ public class WordpressClientImpl implements WordpressClient {
 
         pagedResponse.addAll(entries);
         return pagedResponse;
+    }
+
+    public void setHttpClient(HttpClient httpClient) {
+        this.httpClient = httpClient;
+    }
+
+    public HttpClient getHttpClient() {
+        return httpClient;
     }
 
 
