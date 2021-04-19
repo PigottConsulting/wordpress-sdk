@@ -17,11 +17,11 @@ public class Category {
     @JsonView({JsonViews.Read.class, JsonViews.Edit.class})
     private Integer id;
 
-    @JsonProperty("link")
+    @JsonProperty("count")
     @JsonView({JsonViews.Read.class, JsonViews.Edit.class})
     private Integer count;
 
-    @JsonProperty("link")
+    @JsonProperty("description")
     @JsonView({JsonViews.Read.class, JsonViews.Edit.class})
     private String description;
 
@@ -40,8 +40,4 @@ public class Category {
     @JsonProperty("parent")
     @JsonView({JsonViews.Read.class, JsonViews.Edit.class})
     private Integer parent;
-
-    @JsonProperty("meta")
-    @JsonView({JsonViews.Read.class, JsonViews.Edit.class})
-    private Meta meta;
 }
