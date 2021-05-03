@@ -173,10 +173,10 @@ public class Post {
     }
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    public Map<Integer,String> getAuthorAvatars() {
+    public Map<String,String> getAuthorAvatars() {
         if (this.embeddedData.getAuthor() != null && !this.embeddedData.getAuthor().isEmpty()) {
             Map<String, Object> authorData = this.embeddedData.getAuthor().get(0);
-            return (Map<Integer,String>)authorData.get("avatar_urls");
+            return (Map<String,String>)authorData.get("avatar_urls");
         }
         return null;
     }
